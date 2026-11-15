@@ -1,0 +1,333 @@
+{
+  "team": "Argentina",
+  "totalPasses": 560,
+  "nodes": [
+    {
+      "name": "Enzo Fernandez",
+      "x": 55.15,
+      "y": 43.23,
+      "count": 163
+    },
+    {
+      "name": "Nicolás Hernán Otamendi",
+      "x": 38.54,
+      "y": 24.65,
+      "count": 129
+    },
+    {
+      "name": "Rodrigo Javier De Paul",
+      "x": 57.14,
+      "y": 58.98,
+      "count": 123
+    },
+    {
+      "name": "Lionel Andrés Messi Cuccittini",
+      "x": 76.46,
+      "y": 49.68,
+      "count": 109
+    },
+    {
+      "name": "Cristian Gabriel Romero",
+      "x": 33.87,
+      "y": 52.69,
+      "count": 104
+    },
+    {
+      "name": "Alexis Mac Allister",
+      "x": 68.15,
+      "y": 26.64,
+      "count": 91
+    },
+    {
+      "name": "Nicolás Alejandro Tagliafico",
+      "x": 58.97,
+      "y": 7.64,
+      "count": 76
+    },
+    {
+      "name": "Nahuel Molina Lucero",
+      "x": 57.3,
+      "y": 72.06,
+      "count": 72
+    },
+    {
+      "name": "Ángel Fabián Di María Hernández",
+      "x": 79.88,
+      "y": 11.45,
+      "count": 56
+    },
+    {
+      "name": "Julián Álvarez",
+      "x": 77.71,
+      "y": 34.75,
+      "count": 54
+    },
+    {
+      "name": "Damián Emiliano Martínez",
+      "x": 11.43,
+      "y": 42.16,
+      "count": 33
+    }
+  ],
+  "edges": [
+    {
+      "a": "Cristian Gabriel Romero",
+      "b": "Nicolás Hernán Otamendi",
+      "ab": 12,
+      "ba": 18,
+      "weight": 30
+    },
+    {
+      "a": "Lionel Andrés Messi Cuccittini",
+      "b": "Rodrigo Javier De Paul",
+      "ab": 12,
+      "ba": 14,
+      "weight": 26
+    },
+    {
+      "a": "Nicolás Alejandro Tagliafico",
+      "b": "Nicolás Hernán Otamendi",
+      "ab": 10,
+      "ba": 15,
+      "weight": 25
+    },
+    {
+      "a": "Nahuel Molina Lucero",
+      "b": "Rodrigo Javier De Paul",
+      "ab": 15,
+      "ba": 8,
+      "weight": 23
+    },
+    {
+      "a": "Enzo Fernandez",
+      "b": "Nicolás Hernán Otamendi",
+      "ab": 9,
+      "ba": 14,
+      "weight": 23
+    },
+    {
+      "a": "Enzo Fernandez",
+      "b": "Rodrigo Javier De Paul",
+      "ab": 14,
+      "ba": 9,
+      "weight": 23
+    },
+    {
+      "a": "Cristian Gabriel Romero",
+      "b": "Enzo Fernandez",
+      "ab": 14,
+      "ba": 7,
+      "weight": 21
+    },
+    {
+      "a": "Alexis Mac Allister",
+      "b": "Enzo Fernandez",
+      "ab": 12,
+      "ba": 9,
+      "weight": 21
+    },
+    {
+      "a": "Cristian Gabriel Romero",
+      "b": "Rodrigo Javier De Paul",
+      "ab": 11,
+      "ba": 8,
+      "weight": 19
+    },
+    {
+      "a": "Enzo Fernandez",
+      "b": "Lionel Andrés Messi Cuccittini",
+      "ab": 11,
+      "ba": 8,
+      "weight": 19
+    },
+    {
+      "a": "Alexis Mac Allister",
+      "b": "Nicolás Alejandro Tagliafico",
+      "ab": 3,
+      "ba": 13,
+      "weight": 16
+    },
+    {
+      "a": "Lionel Andrés Messi Cuccittini",
+      "b": "Nahuel Molina Lucero",
+      "ab": 5,
+      "ba": 10,
+      "weight": 15
+    },
+    {
+      "a": "Alexis Mac Allister",
+      "b": "Lionel Andrés Messi Cuccittini",
+      "ab": 7,
+      "ba": 6,
+      "weight": 13
+    },
+    {
+      "a": "Damián Emiliano Martínez",
+      "b": "Nicolás Hernán Otamendi",
+      "ab": 6,
+      "ba": 6,
+      "weight": 12
+    },
+    {
+      "a": "Nicolás Alejandro Tagliafico",
+      "b": "Ángel Fabián Di María Hernández",
+      "ab": 7,
+      "ba": 5,
+      "weight": 12
+    },
+    {
+      "a": "Nicolás Hernán Otamendi",
+      "b": "Rodrigo Javier De Paul",
+      "ab": 3,
+      "ba": 8,
+      "weight": 11
+    },
+    {
+      "a": "Alexis Mac Allister",
+      "b": "Ángel Fabián Di María Hernández",
+      "ab": 8,
+      "ba": 3,
+      "weight": 11
+    },
+    {
+      "a": "Cristian Gabriel Romero",
+      "b": "Nahuel Molina Lucero",
+      "ab": 7,
+      "ba": 3,
+      "weight": 10
+    },
+    {
+      "a": "Enzo Fernandez",
+      "b": "Nahuel Molina Lucero",
+      "ab": 6,
+      "ba": 4,
+      "weight": 10
+    },
+    {
+      "a": "Julián Álvarez",
+      "b": "Lionel Andrés Messi Cuccittini",
+      "ab": 5,
+      "ba": 5,
+      "weight": 10
+    },
+    {
+      "a": "Julián Álvarez",
+      "b": "Rodrigo Javier De Paul",
+      "ab": 6,
+      "ba": 4,
+      "weight": 10
+    },
+    {
+      "a": "Enzo Fernandez",
+      "b": "Nicolás Alejandro Tagliafico",
+      "ab": 5,
+      "ba": 5,
+      "weight": 10
+    },
+    {
+      "a": "Lionel Andrés Messi Cuccittini",
+      "b": "Ángel Fabián Di María Hernández",
+      "ab": 5,
+      "ba": 4,
+      "weight": 9
+    },
+    {
+      "a": "Cristian Gabriel Romero",
+      "b": "Damián Emiliano Martínez",
+      "ab": 4,
+      "ba": 5,
+      "weight": 9
+    },
+    {
+      "a": "Enzo Fernandez",
+      "b": "Julián Álvarez",
+      "ab": 5,
+      "ba": 3,
+      "weight": 8
+    },
+    {
+      "a": "Nicolás Hernán Otamendi",
+      "b": "Ángel Fabián Di María Hernández",
+      "ab": 4,
+      "ba": 3,
+      "weight": 7
+    },
+    {
+      "a": "Alexis Mac Allister",
+      "b": "Julián Álvarez",
+      "ab": 1,
+      "ba": 5,
+      "weight": 6
+    },
+    {
+      "a": "Julián Álvarez",
+      "b": "Nicolás Alejandro Tagliafico",
+      "ab": 1,
+      "ba": 5,
+      "weight": 6
+    },
+    {
+      "a": "Alexis Mac Allister",
+      "b": "Rodrigo Javier De Paul",
+      "ab": 2,
+      "ba": 3,
+      "weight": 5
+    },
+    {
+      "a": "Julián Álvarez",
+      "b": "Nahuel Molina Lucero",
+      "ab": 2,
+      "ba": 3,
+      "weight": 5
+    },
+    {
+      "a": "Alexis Mac Allister",
+      "b": "Nicolás Hernán Otamendi",
+      "ab": 3,
+      "ba": 1,
+      "weight": 4
+    },
+    {
+      "a": "Cristian Gabriel Romero",
+      "b": "Lionel Andrés Messi Cuccittini",
+      "ab": 2,
+      "ba": 2,
+      "weight": 4
+    },
+    {
+      "a": "Julián Álvarez",
+      "b": "Ángel Fabián Di María Hernández",
+      "ab": 2,
+      "ba": 2,
+      "weight": 4
+    },
+    {
+      "a": "Damián Emiliano Martínez",
+      "b": "Nahuel Molina Lucero",
+      "ab": 2,
+      "ba": 2,
+      "weight": 4
+    },
+    {
+      "a": "Enzo Fernandez",
+      "b": "Ángel Fabián Di María Hernández",
+      "ab": 1,
+      "ba": 3,
+      "weight": 4
+    },
+    {
+      "a": "Cristian Gabriel Romero",
+      "b": "Ángel Fabián Di María Hernández",
+      "ab": 3,
+      "ba": 0,
+      "weight": 3
+    },
+    {
+      "a": "Rodrigo Javier De Paul",
+      "b": "Ángel Fabián Di María Hernández",
+      "ab": 0,
+      "ba": 3,
+      "weight": 3
+    }
+  ]
+}

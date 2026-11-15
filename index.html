@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pass Network Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.14"></script>
+<script src="https://unpkg.com/lucide@0.454.0/dist/umd/lucide.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          cream: '#f3efe8',
+          card: '#eae4da',
+          ink: '#1c1a17',
+        },
+        fontFamily: {
+          serif: ['Fraunces', 'ui-serif', 'Georgia', 'serif'],
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { background: #f3efe8; }
+  .glow { background: radial-gradient(60% 60% at 30% 20%, rgba(255,150,120,0.55), transparent 60%), radial-gradient(50% 50% at 80% 70%, rgba(255,190,150,0.45), transparent 60%); }
+  .seg-btn { transition: background-color .15s ease, color .15s ease; }
+  .seg-btn[data-active="true"] { background: #1c1a17; color: #f3efe8; }
+  :root { --accent: #38bdf8; }
+  .accent-icon { color: var(--accent); transition: color .2s ease; }
+  #node-tooltip {
+    position: absolute;
+    z-index: 20;
+    pointer-events: none;
+    background: #1c1a17;
+    color: #f3efe8;
+    font-size: 11px;
+    line-height: 1.4;
+    padding: 6px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+    transform: translate(-50%, -100%);
+    opacity: 0;
+    transition: opacity .1s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  }
+  #node-tooltip.show { opacity: 1; }
+  #pass-network-card.hide-labels .node-label { display: none; }
+  #node-tooltip::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #1c1a17;
+  }
+</style>
+</head>
+<body class="font-sans text-ink antialiased">
+
+<!-- ============ HEADER ============ -->
+<header class="sticky top-0 z-50 px-4 pt-4">
+  <div class="mx-auto max-w-6xl flex items-center justify-between rounded-full border border-black/10 bg-cream/90 backdrop-blur px-5 py-2.5 shadow-sm">
+    <span class="flex items-center gap-2 font-serif text-lg font-medium">Argentina vs France</span>
+    <span class="hidden md:inline text-sm text-ink/50">2022 World Cup Final</span>
+  </div>
+</header>
+
+<main id="top" class="mx-auto max-w-6xl px-4">
+
+  <!-- ============ PASS NETWORK ============ -->
+  <section id="case-study" class="py-16">
+    <div class="text-center mb-6">
+      <h1 class="font-serif text-4xl sm:text-5xl leading-tight">The final, pass by pass.</h1>
+    </div>
+
+    <div class="rounded-2xl border border-black/10 bg-card p-3">
+      <!-- controls -->
+      <div class="flex flex-wrap items-center justify-between gap-3 p-3">
+        <div class="flex items-center gap-1 rounded-full border border-black/10 bg-cream p-1 text-sm font-medium">
+          <button type="button" class="team-btn seg-btn rounded-full px-4 py-1.5" data-team="argentina" data-active="true">Argentina</button>
+          <button type="button" class="team-btn seg-btn rounded-full px-4 py-1.5" data-team="france" data-active="false">France</button>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1 rounded-full border border-black/10 bg-cream p-1 text-sm font-medium">
+            <button type="button" class="view-btn seg-btn rounded-full px-4 py-1.5" data-view="3d" data-active="true">3D</button>
+            <button type="button" class="view-btn seg-btn rounded-full px-4 py-1.5" data-view="2d" data-active="false">2D</button>
+          </div>
+          <button type="button" id="toggle-labels-btn" class="flex items-center gap-1.5 rounded-full border border-black/10 bg-cream px-3 py-1.5 text-xs font-medium text-ink/70 hover:bg-card transition">
+            <i data-lucide="tag" class="h-3.5 w-3.5"></i> <span id="toggle-labels-text">Hide names</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-[1fr_1.4fr] gap-3 px-3 pb-3 items-stretch">
+        <div class="bg-cream rounded-xl border border-black/5 p-6 flex flex-col justify-start gap-5">
+          <div>
+            <h2 class="font-serif text-xl">Every completed pass of the final, mapped.</h2>
+            <p class="mt-2 text-sm text-ink/60">
+              Argentina beat France 3-3 (4-2 on penalties) at the 2022 World Cup held out in Qatar.
+              Below is every completed pass each side's starting XI made along the way, rendered as a
+              relationship network.
+            </p>
+          </div>
+          <div id="network-meta" class="text-sm text-ink/70">
+            <h3 id="narrative-heading" class="font-serif text-lg text-ink mb-2"></h3>
+            <ul id="narrative" class="list-disc list-outside pl-4 space-y-1.5 leading-relaxed"></ul>
+          </div>
+        </div>
+
+        <div id="pass-network-card" class="relative min-h-[460px] h-full rounded-xl bg-cream overflow-hidden border border-black/5">
+          <canvas id="pass-network-canvas" class="block w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+          <div id="pass-network-labels" class="pointer-events-none absolute inset-0"></div>
+          <svg id="pass-network-svg" class="absolute inset-0 w-full h-full hidden" viewBox="0 0 120 80" preserveAspectRatio="xMidYMid meet"></svg>
+          <div id="pass-network-loading" class="absolute inset-0 grid place-items-center text-sm text-ink/40">Loading network&hellip;</div>
+          <div id="view-hint" class="absolute left-3 bottom-3 text-[11px] text-ink/40">Drag to rotate, scroll to zoom</div>
+          <div id="node-tooltip"></div>
+        </div>
+      </div>
+
+      <div class="px-3 pb-3 text-xs text-ink/40">
+        <span id="meta-passes">560 completed passes</span> &middot; <span id="meta-players">11 players</span>
+        &mdash; node size is pass volume; line thickness and darkness show how often each pair exchanged
+        passes (direction is merged).
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="mt-6">
+  <div class="mx-auto max-w-6xl px-4 pb-8">
+    <div class="flex items-center justify-center text-xs text-ink/40 px-2 py-4">
+      <span>&copy; 2026. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  lucide.createIcons();
+</script>
+
+<!-- ============ PASS NETWORK SCENE ============ -->
+<script>
+(function () {
+  'use strict';
+
+  var PITCH_LEN = 120, PITCH_WID = 80;
+  function toWorld(x, y) { return { x: x - PITCH_LEN / 2, z: y - PITCH_WID / 2 }; }
+
+  var SHORT_NAME = {
+    'Enzo Fernandez': 'Enzo',
+    'Nicolás Hernán Otamendi': 'Otamendi',
+    'Rodrigo Javier De Paul': 'De Paul',
+    'Lionel Andrés Messi Cuccittini': 'Messi',
+    'Cristian Gabriel Romero': 'Romero',
+    'Alexis Mac Allister': 'Mac Allister',
+    'Nicolás Alejandro Tagliafico': 'Tagliafico',
+    'Nahuel Molina Lucero': 'Molina',
+    'Ángel Fabián Di María Hernández': 'Di María',
+    'Julián Álvarez': 'Álvarez',
+    'Marcos Javier Acuña': 'Acuña',
+    'Damián Emiliano Martínez': 'Martínez (GK)',
+    'Leandro Daniel Paredes': 'Paredes',
+    'Gonzalo Ariel Montiel': 'Montiel',
+    'Lautaro Javier Martínez': 'Lautaro',
+    'Paulo Bruno Exequiel Dybala': 'Dybala',
+    'Kylian Mbappé Lottin': 'Mbappé',
+    'Antoine Griezmann': 'Griezmann',
+    'Aurélien Djani Tchouaméni': 'Tchouaméni',
+    'Ibrahima Konaté': 'Konaté',
+    'Raphaël Varane': 'Varane',
+    'Ousmane Dembélé': 'Dembélé',
+    'Theo Bernard François Hernández': 'T. Hernández',
+    'Adrien Rabiot': 'Rabiot',
+    'Jules Koundé': 'Koundé',
+    'Olivier Giroud': 'Giroud',
+    'Hugo Lloris': 'Lloris (GK)',
+    'Marcus Thuram': 'Thuram',
+    'Eduardo Camavinga': 'Camavinga',
+    'Randal Kolo Muani': 'Kolo Muani',
+    'Dayotchanculle Upamecano': 'Upamecano',
+    'Youssouf Fofana': 'Fofana'
+  };
+  function shortName(n) { return SHORT_NAME[n] || n.split(' ').pop(); }
+
+  var TEAM_FILES = { argentina: 'passnetwork-argentina.json', france: 'passnetwork-france.json' };
+  var TEAM_ACCENT = { argentina: '#6e9bc2', france: '#3a4a63' };
+  var TEAM_COLOR_3D = {
+    argentina: { color: 0x6e9bc2, emissive: 0x1c2e3d },
+    france: { color: 0x3a4a63, emissive: 0x0e141d }
+  };
+  var dataCache = {};
+  var currentTeam = 'argentina';
+  var currentView = '3d';
+
+  var card = document.getElementById('pass-network-card');
+  var canvas = document.getElementById('pass-network-canvas');
+  var labelsLayer = document.getElementById('pass-network-labels');
+  var loadingEl = document.getElementById('pass-network-loading');
+  var svgEl = document.getElementById('pass-network-svg');
+  var metaPasses = document.getElementById('meta-passes');
+  var metaPlayers = document.getElementById('meta-players');
+  var viewHint = document.getElementById('view-hint');
+  var narrativeEl = document.getElementById('narrative');
+  var narrativeHeadingEl = document.getElementById('narrative-heading');
+  var tooltipEl = document.getElementById('node-tooltip');
+
+  function showTooltip(x, y, html) {
+    tooltipEl.innerHTML = html;
+    tooltipEl.style.left = x + 'px';
+    tooltipEl.style.top = (y - 12) + 'px';
+    tooltipEl.classList.add('show');
+  }
+  function hideTooltip() { tooltipEl.classList.remove('show'); }
+
+  var threeReady = !!window.THREE;
+  var scene, camera, renderer, networkGroup, orbit, center, dragging = false, lastX = 0, lastY = 0, autoRotate = true;
+  var raycaster, mouseNDC, nodeMeshes = [], arcMeshes = [];
+
+  if (threeReady) {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xf3efe8);
+
+    camera = new THREE.PerspectiveCamera(45, 1, 0.1, 500);
+    renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+    scene.add(new THREE.HemisphereLight(0xffffff, 0xd9d9d9, 1.0));
+    var sun = new THREE.DirectionalLight(0xffffff, 0.9);
+    sun.position.set(-30, 50, 30);
+    scene.add(sun);
+
+    networkGroup = new THREE.Group();
+    scene.add(networkGroup);
+    addPitchMarkings();
+
+    orbit = { az: 0.55, el: 0.55, radius: 95 };
+    center = new THREE.Vector3(0, 3, 0);
+
+    canvas.addEventListener('pointerdown', function (e) { dragging = true; autoRotate = false; lastX = e.clientX; lastY = e.clientY; canvas.setPointerCapture(e.pointerId); });
+    canvas.addEventListener('pointerup', function () { dragging = false; });
+    canvas.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      orbit.az -= (e.clientX - lastX) * 0.005;
+      orbit.el = Math.max(0.12, Math.min(1.45, orbit.el + (e.clientY - lastY) * 0.005));
+      lastX = e.clientX; lastY = e.clientY;
+      applyOrbit();
+    });
+    canvas.addEventListener('wheel', function (e) {
+      if (currentView !== '3d') return;
+      e.preventDefault();
+      orbit.radius = Math.max(40, Math.min(160, orbit.radius + e.deltaY * 0.08));
+      applyOrbit();
+    }, { passive: false });
+  }
+
+  function applyOrbit() {
+    if (!threeReady) return;
+    var x = center.x + orbit.radius * Math.cos(orbit.el) * Math.sin(orbit.az);
+    var y = center.y + orbit.radius * Math.sin(orbit.el);
+    var z = center.z + orbit.radius * Math.cos(orbit.el) * Math.cos(orbit.az);
+    camera.position.set(x, y, z);
+    camera.lookAt(center);
+  }
+
+  function resize() {
+    var w = card.clientWidth, h = card.clientHeight;
+    if (threeReady) {
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+  }
+  window.addEventListener('resize', resize);
+  new ResizeObserver(resize).observe(card);
+
+  function addPitchMarkings() {
+    var mat = new THREE.LineBasicMaterial({ color: 0x2a2a2a, transparent: true, opacity: 0.45 });
+    function drawLine(points) {
+      var pts = points.map(function (p) {
+        var w = toWorld(p[0], p[1]);
+        return new THREE.Vector3(w.x, 0.02, w.z);
+      });
+      var geo = new THREE.BufferGeometry().setFromPoints(pts);
+      scene.add(new THREE.Line(geo, mat));
+    }
+    // floor plate (keeps the pitch readable from steep angles)
+    var floorGeo = new THREE.PlaneGeometry(PITCH_LEN - 2, PITCH_WID - 2);
+    var floorMat = new THREE.MeshBasicMaterial({ color: 0xf3efe8, side: THREE.DoubleSide });
+    var floor = new THREE.Mesh(floorGeo, floorMat);
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = 0.01;
+    scene.add(floor);
+
+    // outline
+    drawLine([[1, 1], [119, 1], [119, 79], [1, 79], [1, 1]]);
+    // halfway line
+    drawLine([[60, 1], [60, 79]]);
+    // centre circle
+    var circlePts = [];
+    for (var i = 0; i <= 64; i++) {
+      var a = (i / 64) * Math.PI * 2;
+      circlePts.push([60 + 9 * Math.cos(a), 40 + 9 * Math.sin(a)]);
+    }
+    drawLine(circlePts);
+    // penalty boxes
+    drawLine([[1, 18], [17, 18], [17, 62], [1, 62], [1, 18]]);
+    drawLine([[103, 18], [119, 18], [119, 62], [103, 62], [103, 18]]);
+    // six-yard boxes
+    drawLine([[1, 30], [7, 30], [7, 50], [1, 50], [1, 30]]);
+    drawLine([[113, 30], [119, 30], [119, 50], [113, 50], [113, 30]]);
+  }
+
+  var passLabels = [];
+  function clearLabels() {
+    passLabels.forEach(function (l) { l.el.remove(); });
+    passLabels = [];
+  }
+
+  function addPassNode(w, radius, name, count, nodeColor) {
+    var mesh = new THREE.Mesh(
+      new THREE.TorusGeometry(radius, radius * 0.22, 10, 28),
+      new THREE.MeshStandardMaterial({ color: nodeColor.color, emissive: nodeColor.emissive, roughness: 0.4, metalness: 0.1 })
+    );
+    mesh.rotation.x = Math.PI / 2;
+    mesh.position.set(w.x, 0.12, w.z);
+    mesh.userData = { name: shortName(name), count: count };
+    networkGroup.add(mesh);
+    nodeMeshes.push(mesh);
+  }
+
+  // One arc per pair — direction is merged, so darkness/opacity encodes total frequency only.
+  function addPassArc(from, to, weight, maxWeight, color, nameA, nameB) {
+    if (weight <= 0) return;
+    var dx = to.x - from.x, dz = to.z - from.z;
+    var dist = Math.hypot(dx, dz);
+    var start = new THREE.Vector3(from.x, 0.15, from.z);
+    var end = new THREE.Vector3(to.x, 0.15, to.z);
+    var mid = start.clone().add(end).multiplyScalar(0.5);
+    mid.y = Math.min(12, 1.6 + dist * 0.22);
+    var curve = new THREE.QuadraticBezierCurve3(start, mid, end);
+    var t = weight / maxWeight;
+    var radius = 0.05 + Math.sqrt(t) * 0.22;
+    var tubeGeo = new THREE.TubeGeometry(curve, 28, Math.max(radius, 0.12), 6, false);
+    var mat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.3 + t * 0.6 });
+    var mesh = new THREE.Mesh(tubeGeo, mat);
+    mesh.userData = { isEdge: true, a: shortName(nameA), b: shortName(nameB), weight: weight };
+    networkGroup.add(mesh);
+    arcMeshes.push(mesh);
+  }
+
+  function build3D(data) {
+    networkGroup.clear();
+    clearLabels();
+    nodeMeshes = [];
+    arcMeshes = [];
+    var maxCount = Math.max.apply(null, data.nodes.map(function (n) { return n.count; }));
+    var maxWeight = 1;
+    data.edges.forEach(function (e) { maxWeight = Math.max(maxWeight, e.weight); });
+    var posByName = {};
+    var nodeColor = TEAM_COLOR_3D[currentTeam];
+
+    data.nodes.forEach(function (n, i) {
+      var w = toWorld(n.x, n.y);
+      posByName[n.name] = w;
+      var radius = 0.7 + Math.sqrt(n.count / maxCount) * 0.55;
+      addPassNode(w, radius, n.name, n.count, nodeColor);
+      if (i < 11) {
+        var el = document.createElement('div');
+        el.className = 'node-label absolute text-[11px] font-medium text-ink/80 whitespace-nowrap -translate-x-1/2 -translate-y-full';
+        el.style.textShadow = '0 1px 2px rgba(255,255,255,0.9), 0 0 6px rgba(255,255,255,0.7)';
+        el.textContent = shortName(n.name);
+        labelsLayer.appendChild(el);
+        passLabels.push({ el: el, pos: new THREE.Vector3(w.x, radius + 1.6, w.z) });
+      }
+    });
+
+    var arcColor = nodeColor.color;
+    data.edges.forEach(function (e) {
+      var a = posByName[e.a], b = posByName[e.b];
+      if (!a || !b) return;
+      addPassArc(a, b, e.weight, maxWeight, arcColor, e.a, e.b);
+    });
+  }
+
+  function updateLabels3D() {
+    var w = card.clientWidth, h = card.clientHeight;
+    passLabels.forEach(function (l) {
+      var p = l.pos.clone().project(camera);
+      if (p.z > 1) { l.el.style.opacity = '0'; return; }
+      l.el.style.opacity = '1';
+      l.el.style.left = ((p.x * 0.5 + 0.5) * w) + 'px';
+      l.el.style.top = ((-p.y * 0.5 + 0.5) * h) + 'px';
+    });
+  }
+
+  function svgEscape(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+
+  function build2D(data) {
+    var maxCount = Math.max.apply(null, data.nodes.map(function (n) { return n.count; }));
+    var posByName = {};
+    data.nodes.forEach(function (n) { posByName[n.name] = n; });
+
+    var parts = [];
+    parts.push('<rect x="0" y="0" width="120" height="80" fill="#f3efe8"/>');
+    // pitch outline
+    parts.push('<g stroke="#d8d8d8" stroke-width="0.35" fill="none">');
+    parts.push('<rect x="1" y="1" width="118" height="78"/>');
+    parts.push('<line x1="60" y1="1" x2="60" y2="79"/>');
+    parts.push('<circle cx="60" cy="40" r="9"/>');
+    parts.push('<rect x="1" y="18" width="16" height="44"/>');
+    parts.push('<rect x="103" y="18" width="16" height="44"/>');
+    parts.push('</g>');
+
+    // edges first, underneath nodes — one combined line per pair (ab + ba together)
+    var maxWeight = 1;
+    data.edges.forEach(function (e) { maxWeight = Math.max(maxWeight, e.weight); });
+    data.edges.forEach(function (e) {
+      var a = posByName[e.a], b = posByName[e.b];
+      if (!a || !b) return;
+      var t = e.weight / maxWeight;
+      var strokeW = 0.3 + Math.sqrt(t) * 1.6;
+      var opacity = (0.3 + t * 0.6).toFixed(2);
+      parts.push('<line x1="' + a.x.toFixed(2) + '" y1="' + a.y.toFixed(2) + '" x2="' + b.x.toFixed(2) + '" y2="' + b.y.toFixed(2) + '" stroke="' + TEAM_ACCENT[currentTeam] + '" stroke-width="' + strokeW.toFixed(2) + '" opacity="' + opacity + '" stroke-linecap="round" style="pointer-events:none;"/>');
+      // wider invisible hit-area for reliable hover, carries the tooltip data
+      parts.push('<line data-tip="1" data-a="' + svgEscape(shortName(e.a)) + '" data-b="' + svgEscape(shortName(e.b)) + '" data-weight="' + e.weight + '" x1="' + a.x.toFixed(2) + '" y1="' + a.y.toFixed(2) + '" x2="' + b.x.toFixed(2) + '" y2="' + b.y.toFixed(2) + '" stroke="#000" stroke-opacity="0" stroke-width="' + Math.max(strokeW + 2.5, 3.5).toFixed(2) + '" style="pointer-events:stroke;"/>');
+    });
+
+    // nodes + labels
+    data.nodes.forEach(function (n) {
+      var radius = 1.4 + Math.sqrt(n.count / maxCount) * 2.2;
+      parts.push('<circle data-tip="1" data-name="' + svgEscape(shortName(n.name)) + '" data-count="' + n.count + '" cx="' + n.x.toFixed(2) + '" cy="' + n.y.toFixed(2) + '" r="' + radius.toFixed(2) + '" fill="#ffffff" stroke="' + TEAM_ACCENT[currentTeam] + '" stroke-width="0.6"/>');
+      parts.push('<text class="node-label" x="' + n.x.toFixed(2) + '" y="' + (n.y - radius - 1.1).toFixed(2) + '" font-size="2.6" font-family="Inter, sans-serif" font-weight="500" fill="#1c1a17" text-anchor="middle">' + svgEscape(shortName(n.name)) + '</text>');
+    });
+
+    svgEl.innerHTML = parts.join('');
+  }
+
+  function setLoading(on, msg) {
+    if (on) {
+      loadingEl.textContent = msg || 'Loading network…';
+      loadingEl.classList.remove('hidden');
+    } else {
+      loadingEl.classList.add('hidden');
+    }
+  }
+
+  function updateMeta(data) {
+    metaPasses.textContent = data.totalPasses + ' completed passes';
+    metaPlayers.textContent = data.nodes.length + ' players';
+  }
+
+  function buildNarrative(data, team) {
+    var top = data.edges[0], second = data.edges[1];
+    var topA = shortName(top.a), topB = shortName(top.b);
+    var secA = shortName(second.a), secB = shortName(second.b);
+    return [
+      'The thickest line on the pitch links <strong>' + topA + '</strong> and <strong>' + topB + '</strong> &mdash; '
+        + top.weight + ' passes between them, more than any other pair, with <strong>' + secA + '</strong> and <strong>'
+        + secB + '</strong> (' + second.weight + ') close behind.'
+    ];
+  }
+
+  function render() {
+    var data = dataCache[currentTeam];
+    if (!data) return;
+    updateMeta(data);
+    narrativeHeadingEl.textContent = (currentTeam === 'argentina' ? 'Argentina' : 'France') + '’s passing network';
+    narrativeEl.innerHTML = buildNarrative(data, currentTeam).map(function (li) { return '<li>' + li + '</li>'; }).join('');
+    hideTooltip();
+
+    if (currentView === '3d') {
+      svgEl.classList.add('hidden');
+      canvas.classList.remove('hidden');
+      labelsLayer.classList.remove('hidden');
+      viewHint.textContent = 'Drag to rotate, scroll to zoom';
+      build3D(data);
+      resize();
+    } else {
+      canvas.classList.add('hidden');
+      labelsLayer.classList.add('hidden');
+      svgEl.classList.remove('hidden');
+      viewHint.textContent = 'Top-down view, true to pitch coordinates';
+      build2D(data);
+    }
+  }
+
+  function loadTeam(team) {
+    document.documentElement.style.setProperty('--accent', TEAM_ACCENT[team]);
+    if (dataCache[team]) { currentTeam = team; render(); return; }
+    setLoading(true);
+    fetch(TEAM_FILES[team]).then(function (r) { return r.json(); }).then(function (data) {
+      dataCache[team] = data;
+      currentTeam = team;
+      setLoading(false);
+      render();
+    }).catch(function (err) {
+      console.error(err);
+      setLoading(true, 'Could not load network data.');
+    });
+  }
+
+  document.querySelectorAll('.team-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.team-btn').forEach(function (b) { b.setAttribute('data-active', b === btn ? 'true' : 'false'); });
+      loadTeam(btn.getAttribute('data-team'));
+    });
+  });
+  document.querySelectorAll('.view-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.view-btn').forEach(function (b) { b.setAttribute('data-active', b === btn ? 'true' : 'false'); });
+      currentView = btn.getAttribute('data-view');
+      render();
+    });
+  });
+
+  var namesVisible = true;
+  var toggleLabelsText = document.getElementById('toggle-labels-text');
+  document.getElementById('toggle-labels-btn').addEventListener('click', function () {
+    namesVisible = !namesVisible;
+    card.classList.toggle('hide-labels', !namesVisible);
+    toggleLabelsText.textContent = namesVisible ? 'Hide names' : 'Show names';
+  });
+
+  // ---- hover tooltips ----
+  // 2D: event delegation over the SVG's node circles (data-tip="1").
+  svgEl.addEventListener('pointermove', function (e) {
+    var t = e.target;
+    if (!t || !t.getAttribute('data-tip')) { hideTooltip(); return; }
+    var rect = card.getBoundingClientRect();
+    if (t.tagName === 'circle') {
+      showTooltip(e.clientX - rect.left, e.clientY - rect.top,
+        '<strong>' + t.getAttribute('data-name') + '</strong><br>' + t.getAttribute('data-count') + ' passes involved');
+    } else if (t.tagName === 'line') {
+      showTooltip(e.clientX - rect.left, e.clientY - rect.top,
+        '<strong>' + t.getAttribute('data-a') + '</strong> &harr; <strong>' + t.getAttribute('data-b') + '</strong><br>' + t.getAttribute('data-weight') + ' passes between them');
+    } else {
+      hideTooltip();
+    }
+  });
+  svgEl.addEventListener('pointerleave', hideTooltip);
+
+  // 3D: raycast against the node meshes.
+  if (threeReady) {
+    raycaster = new THREE.Raycaster();
+    mouseNDC = new THREE.Vector2();
+    canvas.addEventListener('pointermove', function (e) {
+      if (currentView !== '3d' || dragging) { hideTooltip(); return; }
+      var rect = canvas.getBoundingClientRect();
+      mouseNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouseNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(mouseNDC, camera);
+      var hits = raycaster.intersectObjects(nodeMeshes.concat(arcMeshes));
+      if (hits.length) {
+        var d = hits[0].object.userData;
+        var html = d.isEdge
+          ? '<strong>' + d.a + '</strong> &harr; <strong>' + d.b + '</strong><br>' + d.weight + ' passes between them'
+          : '<strong>' + d.name + '</strong><br>' + d.count + ' passes involved';
+        showTooltip(e.clientX - rect.left, e.clientY - rect.top, html);
+      } else {
+        hideTooltip();
+      }
+    });
+    canvas.addEventListener('pointerleave', hideTooltip);
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    if (currentView !== '3d') return;
+    if (autoRotate) { orbit.az += 0.0015; applyOrbit(); }
+    updateLabels3D();
+    renderer.render(scene, camera);
+  }
+
+  applyOrbit();
+  resize();
+  loadTeam(currentTeam);
+  if (threeReady) animate();
+})();
+</script>
+</body>
+</html>

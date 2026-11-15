@@ -1,0 +1,284 @@
+{
+  "team": "France",
+  "totalPasses": 434,
+  "nodes": [
+    {
+      "name": "Raphaël Varane",
+      "x": 44.81,
+      "y": 50.28,
+      "count": 106
+    },
+    {
+      "name": "Dayotchanculle Upamecano",
+      "x": 45.62,
+      "y": 25.54,
+      "count": 106
+    },
+    {
+      "name": "Aurélien Djani Tchouaméni",
+      "x": 57.85,
+      "y": 39.05,
+      "count": 100
+    },
+    {
+      "name": "Jules Koundé",
+      "x": 53.64,
+      "y": 68.57,
+      "count": 99
+    },
+    {
+      "name": "Adrien Rabiot",
+      "x": 64.45,
+      "y": 27.43,
+      "count": 82
+    },
+    {
+      "name": "Theo Bernard François Hernández",
+      "x": 63.11,
+      "y": 5.97,
+      "count": 75
+    },
+    {
+      "name": "Kylian Mbappé Lottin",
+      "x": 81.03,
+      "y": 16.76,
+      "count": 48
+    },
+    {
+      "name": "Antoine Griezmann",
+      "x": 70.8,
+      "y": 37.29,
+      "count": 44
+    },
+    {
+      "name": "Hugo Lloris",
+      "x": 14.16,
+      "y": 38.64,
+      "count": 38
+    },
+    {
+      "name": "Ousmane Dembélé",
+      "x": 66.57,
+      "y": 71.96,
+      "count": 21
+    },
+    {
+      "name": "Olivier Giroud",
+      "x": 69.24,
+      "y": 56.02,
+      "count": 13
+    }
+  ],
+  "edges": [
+    {
+      "a": "Dayotchanculle Upamecano",
+      "b": "Raphaël Varane",
+      "ab": 14,
+      "ba": 16,
+      "weight": 30
+    },
+    {
+      "a": "Jules Koundé",
+      "b": "Raphaël Varane",
+      "ab": 15,
+      "ba": 12,
+      "weight": 27
+    },
+    {
+      "a": "Dayotchanculle Upamecano",
+      "b": "Theo Bernard François Hernández",
+      "ab": 10,
+      "ba": 8,
+      "weight": 18
+    },
+    {
+      "a": "Adrien Rabiot",
+      "b": "Aurélien Djani Tchouaméni",
+      "ab": 8,
+      "ba": 9,
+      "weight": 17
+    },
+    {
+      "a": "Aurélien Djani Tchouaméni",
+      "b": "Dayotchanculle Upamecano",
+      "ab": 9,
+      "ba": 7,
+      "weight": 16
+    },
+    {
+      "a": "Aurélien Djani Tchouaméni",
+      "b": "Jules Koundé",
+      "ab": 8,
+      "ba": 6,
+      "weight": 14
+    },
+    {
+      "a": "Aurélien Djani Tchouaméni",
+      "b": "Raphaël Varane",
+      "ab": 6,
+      "ba": 7,
+      "weight": 13
+    },
+    {
+      "a": "Kylian Mbappé Lottin",
+      "b": "Theo Bernard François Hernández",
+      "ab": 4,
+      "ba": 8,
+      "weight": 12
+    },
+    {
+      "a": "Aurélien Djani Tchouaméni",
+      "b": "Theo Bernard François Hernández",
+      "ab": 7,
+      "ba": 5,
+      "weight": 12
+    },
+    {
+      "a": "Adrien Rabiot",
+      "b": "Kylian Mbappé Lottin",
+      "ab": 7,
+      "ba": 4,
+      "weight": 11
+    },
+    {
+      "a": "Adrien Rabiot",
+      "b": "Theo Bernard François Hernández",
+      "ab": 5,
+      "ba": 5,
+      "weight": 10
+    },
+    {
+      "a": "Jules Koundé",
+      "b": "Ousmane Dembélé",
+      "ab": 6,
+      "ba": 4,
+      "weight": 10
+    },
+    {
+      "a": "Hugo Lloris",
+      "b": "Raphaël Varane",
+      "ab": 4,
+      "ba": 6,
+      "weight": 10
+    },
+    {
+      "a": "Adrien Rabiot",
+      "b": "Dayotchanculle Upamecano",
+      "ab": 5,
+      "ba": 4,
+      "weight": 9
+    },
+    {
+      "a": "Dayotchanculle Upamecano",
+      "b": "Jules Koundé",
+      "ab": 6,
+      "ba": 3,
+      "weight": 9
+    },
+    {
+      "a": "Antoine Griezmann",
+      "b": "Theo Bernard François Hernández",
+      "ab": 5,
+      "ba": 3,
+      "weight": 8
+    },
+    {
+      "a": "Antoine Griezmann",
+      "b": "Jules Koundé",
+      "ab": 3,
+      "ba": 4,
+      "weight": 7
+    },
+    {
+      "a": "Dayotchanculle Upamecano",
+      "b": "Hugo Lloris",
+      "ab": 3,
+      "ba": 4,
+      "weight": 7
+    },
+    {
+      "a": "Adrien Rabiot",
+      "b": "Antoine Griezmann",
+      "ab": 3,
+      "ba": 3,
+      "weight": 6
+    },
+    {
+      "a": "Adrien Rabiot",
+      "b": "Raphaël Varane",
+      "ab": 4,
+      "ba": 2,
+      "weight": 6
+    },
+    {
+      "a": "Raphaël Varane",
+      "b": "Theo Bernard François Hernández",
+      "ab": 3,
+      "ba": 2,
+      "weight": 5
+    },
+    {
+      "a": "Aurélien Djani Tchouaméni",
+      "b": "Kylian Mbappé Lottin",
+      "ab": 4,
+      "ba": 1,
+      "weight": 5
+    },
+    {
+      "a": "Antoine Griezmann",
+      "b": "Aurélien Djani Tchouaméni",
+      "ab": 3,
+      "ba": 1,
+      "weight": 4
+    },
+    {
+      "a": "Hugo Lloris",
+      "b": "Jules Koundé",
+      "ab": 1,
+      "ba": 3,
+      "weight": 4
+    },
+    {
+      "a": "Antoine Griezmann",
+      "b": "Raphaël Varane",
+      "ab": 1,
+      "ba": 3,
+      "weight": 4
+    },
+    {
+      "a": "Antoine Griezmann",
+      "b": "Kylian Mbappé Lottin",
+      "ab": 2,
+      "ba": 2,
+      "weight": 4
+    },
+    {
+      "a": "Hugo Lloris",
+      "b": "Olivier Giroud",
+      "ab": 3,
+      "ba": 0,
+      "weight": 3
+    },
+    {
+      "a": "Antoine Griezmann",
+      "b": "Olivier Giroud",
+      "ab": 1,
+      "ba": 2,
+      "weight": 3
+    },
+    {
+      "a": "Olivier Giroud",
+      "b": "Ousmane Dembélé",
+      "ab": 1,
+      "ba": 2,
+      "weight": 3
+    },
+    {
+      "a": "Adrien Rabiot",
+      "b": "Jules Koundé",
+      "ab": 2,
+      "ba": 1,
+      "weight": 3
+    }
+  ]
+}
